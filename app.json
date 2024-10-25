@@ -19,10 +19,20 @@
       "supportsTablet": true
     },
     "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBIdNcHVFuQ3hkQfqtnMyi7-d6GisdaE7A"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "package": "com.mostafaelkorashy.delivrooClone"
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +43,17 @@
       "expo-router"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "86e6a102-d91a-4404-8ebe-2b6bad81ab97"
+      },
+      "googleMapsApiKey": "AIzaSyAykOvfZTCg8priVQSJyDAuyJsUDioWKPg" 
     }
   }
 }

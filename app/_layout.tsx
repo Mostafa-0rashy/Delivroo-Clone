@@ -1,56 +1,98 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+import {  Stack, useNavigation } from 'expo-router';
+import CustomHeader from '@/components/Custom Header';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Colors from '@/constants/Colors';
+import { Modal, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import React from 'react'
+export default function RootLayoutNav() {
+ const navigation= useNavigation();
+ const [isModalvisvble,setIsmodalVisble]=useState(false);
+ 
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <GestureHandlerRootView style={{flex:1}}>
+      <BottomSheetModalProvider>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="index" 
+          options={{ 
+          header:()=><CustomHeader/>
+         }} />
+         <Stack.Screen name="(modal)/filter" 
+         options={{
+          headerTitle:'Filter' ,
+          headerTitleAlign:'center',
+          presentation:'modal',
+          headerShadowVisible:false,
+          headerStyle:{
+            backgroundColor:Colors.lightGrey,
+          },
+          headerLeft:()=>(
+            <TouchableOpacity  onPress={()=>{navigation.goBack()}}>
+               <Ionicons name='close-outline' size={28} color={Colors.primary}>
+               </Ionicons>
+            </TouchableOpacity>
+
+
+
+          )
+        }}/>
+        <Stack.Screen name="(modal)/location-search" 
+         options={{
+          headerTitle:'Search Location' ,
+          headerTitleAlign:'center',
+          presentation:'fullScreenModal',
+          animation:'slide_from_bottom',
+          headerShadowVisible:false,
+          headerLeft:()=>(
+            <TouchableOpacity  onPress={()=>{setIsmodalVisble(false),navigation.goBack()}} >
+               <Ionicons name='close-outline' size={28} color={Colors.primary}>
+
+               </Ionicons>
+            </TouchableOpacity>
+
+
+
+          )
+        }}/>
+     
+        <Stack.Screen name="(modal)/dish" 
+         options={{
+          headerTitle:'' ,
+          headerTransparent:true,
+          headerLeft:()=>(
+            <TouchableOpacity 
+            style={{backgroundColor:'#fff',borderRadius:20,padding:5}}
+            onPress={()=>{navigation.goBack()}}>
+               <Ionicons name='close-outline' size={28} color={Colors.primary}>
+               </Ionicons>
+            </TouchableOpacity>
+
+
+
+          )
+        }}/>
+        <Stack.Screen name="(modal)/basket" 
+         options={{
+          headerTitle:'   My Basket' ,
+          headerLeft:()=>(
+            <TouchableOpacity 
+            style={{backgroundColor:'#fff',borderRadius:20,padding:5}}
+            onPress={()=>{navigation.goBack()}}>
+               <Ionicons name='arrow-back-outline' size={20} color={Colors.primary}>
+               </Ionicons>
+            </TouchableOpacity>
+
+
+
+          )
+        }}/>
       </Stack>
-    </ThemeProvider>
+      </BottomSheetModalProvider>
+      </GestureHandlerRootView>
+
   );
+  
 }
